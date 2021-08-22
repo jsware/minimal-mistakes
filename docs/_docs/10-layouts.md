@@ -405,20 +405,6 @@ search: false
 **ProTip:** Add a link to this page in the masthead navigation.
 {: .notice--info}
 
-## Redirect page layout
-
-This layout helps with reorganising a site with incoming external links. If you have no control over proxy rewrite/redirects, use the redirect layout. See [jsware/jekyll-redirect-html](https://www.jsware.io/jekyll-redirect-html/) for details.
-
-Create a page with the following front matter:
-
-```yaml
----
-layout: redirect
-permalink: /path/to/original/page/
-redirect: /path/to/correct/page/
----
-```
-
 ---
 
 ## Headers
