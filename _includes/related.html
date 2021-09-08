@@ -1,0 +1,55 @@
+{% assign related_limit = page.related_limit | default: site.related_limit | default: 4 %}
+{% assign related_threshold = page.related_threshold | default: site.related_threshold | default: 0 %}
+{% assign related_template = include.template | default: "archive-single.html" %}
+{% assign related_format = include.format | default: "grid" %}
+
+{% comment %}<!-- Random related pages -->{% endcomment %}
+{% if related_threshold < 0 %}
+  {% assign related_posts = site.documents | sample: related_limit+1 %}
+
+{% comment %}<!-- Tag/category matching pages -->{% endcomment %}
+{% elsif related_threshold > 0 %}
+  {% assign related_posts = "" | split: " " %}
+
+  {% for doc in site.documents %}
+    {% if doc.id == page.id %}
+      {% continue %}
+    {% endif %}
+
+    {% assign related_count = 0 %}
+
+    {% for tag in doc.tags %}
+      {% if page.tags contains tag %}
+        {% assign related_count = related_count | plus: 1 %}
+      {% endif %}
+    {% endfor %}
+
+    {% for cat in doc.categories %}
+      {% if page.categories contains cat %}
+        {% assign related_count = related_count | plus: 1 %}
+      {% endif %}
+    {% endfor %}
+
+    {% if related_count >= related_threshold %}
+      {% assign related_posts = related_posts | push: doc %}
+    {% endif %}
+  {% endfor %}
+
+  {% assign related_posts = related_posts | sample: related_limit %}
+
+{% comment %}<!-- Use site.related_posts for posts if found -->{% endcomment %}
+{% elsif site.related_posts.size > 0 %}
+  {% assign related_posts = site.related_posts %}
+
+{% comment %}<!-- Otherwise show recent posts if no site.related_posts -->{% endcomment %}
+{% else %}
+  {% assign related_posts = site.posts %}
+{% endif %}
+
+{% for post in related_posts limit:related_limit %}
+  {% if post.id == page.id %}
+    {% continue %}
+  {% endif %}
+
+  {% include {{ related_template }} type=related_format %}
+{% endfor %}
